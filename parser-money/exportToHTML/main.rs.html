@@ -1,0 +1,180 @@
+<html>
+<head>
+<title>main.rs</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #fb4934;}
+.s1 { color: #fbf1c7;}
+.s2 { color: #fbf1c7;}
+.s3 { color: #ebdbb2;}
+.s4 { color: #f8e1aa;}
+.s5 { color: #d3869b;}
+.s6 { color: #b8bb26;}
+.s7 { color: #928374; font-style: italic;}
+.s8 { color: #20999d; font-style: italic;}
+</style>
+</head>
+<body bgcolor="#1d2021">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+main.rs</font>
+</center></td></tr></table>
+<pre><span class="s0">use </span><span class="s2">std</span><span class="s3">::</span><span class="s2">fmt</span><span class="s3">::</span><span class="s2">Formatter</span><span class="s3">;</span>
+<span class="s0">use </span><span class="s2">std</span><span class="s3">::</span><span class="s2">string</span><span class="s3">::</span><span class="s2">ParseError</span><span class="s3">;</span>
+<span class="s0">use </span><span class="s2">std</span><span class="s3">::</span><span class="s2">str</span><span class="s3">::</span><span class="s2">FromStr</span><span class="s3">;</span>
+<span class="s0">use </span><span class="s2">std</span><span class="s3">::</span><span class="s2">num</span><span class="s3">::</span><span class="s2">ParseFloatError</span><span class="s3">;</span>
+
+<span class="s0">fn </span><span class="s2">parse_money_v1</span><span class="s4">(</span><span class="s2">input</span><span class="s3">: &amp;</span><span class="s2">str</span><span class="s4">) </span><span class="s3">-&gt; </span><span class="s4">(</span><span class="s2">i32</span><span class="s3">, </span><span class="s2">String</span><span class="s4">){</span>
+    <span class="s0">let </span><span class="s2">parts</span><span class="s3">: </span><span class="s2">Vec</span><span class="s3">&lt;&amp;</span><span class="s2">str</span><span class="s3">&gt; = </span><span class="s2">input</span><span class="s3">.</span><span class="s2">split_whitespace</span><span class="s4">()</span><span class="s3">.</span><span class="s2">collect</span><span class="s4">()</span><span class="s3">;</span>
+    <span class="s0">let </span><span class="s2">maybe_amount </span><span class="s3">= </span><span class="s2">parts</span><span class="s4">[</span><span class="s5">0</span><span class="s4">]</span><span class="s3">.</span><span class="s2">parse</span><span class="s4">()</span><span class="s3">;</span>
+    <span class="s0">if </span><span class="s2">maybe_amount</span><span class="s3">.</span><span class="s2">is_err</span><span class="s4">(){</span>
+        <span class="s0">return </span><span class="s4">(</span><span class="s3">-</span><span class="s5">1</span><span class="s3">, </span><span class="s6">&quot;invalid&quot;</span><span class="s3">.</span><span class="s2">to_string</span><span class="s4">())</span><span class="s3">;</span>
+    <span class="s4">}</span>
+    <span class="s0">let </span><span class="s2">currency </span><span class="s3">= </span><span class="s2">parts</span><span class="s4">[</span><span class="s5">1</span><span class="s4">]</span><span class="s3">.</span><span class="s2">to_string</span><span class="s4">()</span><span class="s3">;</span>
+    <span class="s0">return </span><span class="s4">(</span><span class="s2">maybe_amount</span><span class="s3">.</span><span class="s2">unwrap</span><span class="s4">()</span><span class="s3">, </span><span class="s2">currency</span><span class="s4">)</span><span class="s3">;</span>
+<span class="s4">}</span>
+
+<span class="s7">// &quot;10 rmb&quot;, &quot;20.1 dollar&quot;</span>
+<span class="s7">// 应该至少支持f64的格式 parse自动根据输出参数调整匹配</span>
+<span class="s0">fn </span><span class="s2">parse_money_v2</span><span class="s4">(</span><span class="s2">input</span><span class="s3">: &amp;</span><span class="s2">str</span><span class="s4">) </span><span class="s3">-&gt; </span><span class="s4">(</span><span class="s2">f64</span><span class="s3">, </span><span class="s2">String</span><span class="s4">){</span>
+    <span class="s0">let </span><span class="s2">parts</span><span class="s3">: </span><span class="s2">Vec</span><span class="s3">&lt;&amp;</span><span class="s2">str</span><span class="s3">&gt; = </span><span class="s2">input</span><span class="s3">.</span><span class="s2">split_whitespace</span><span class="s4">()</span><span class="s3">.</span><span class="s2">collect</span><span class="s4">()</span><span class="s3">;</span>
+    <span class="s0">let </span><span class="s2">maybe_amount </span><span class="s3">= </span><span class="s2">parts</span><span class="s4">[</span><span class="s5">0</span><span class="s4">]</span><span class="s3">.</span><span class="s2">parse</span><span class="s4">()</span><span class="s3">;</span>
+    <span class="s0">if </span><span class="s2">maybe_amount</span><span class="s3">.</span><span class="s2">is_err</span><span class="s4">(){</span>
+        <span class="s0">return </span><span class="s4">(</span><span class="s3">-</span><span class="s5">1.0</span><span class="s3">, </span><span class="s6">&quot;invalid&quot;</span><span class="s3">.</span><span class="s2">to_string</span><span class="s4">())</span><span class="s3">;</span>
+    <span class="s4">}</span>
+    <span class="s0">let </span><span class="s2">currency </span><span class="s3">= </span><span class="s2">parts</span><span class="s4">[</span><span class="s5">1</span><span class="s4">]</span><span class="s3">.</span><span class="s2">to_string</span><span class="s4">()</span><span class="s3">;</span>
+    <span class="s0">return </span><span class="s4">(</span><span class="s2">maybe_amount</span><span class="s3">.</span><span class="s2">unwrap</span><span class="s4">()</span><span class="s3">, </span><span class="s2">currency</span><span class="s4">)</span><span class="s3">;</span>
+<span class="s4">}</span>
+
+
+<span class="s7">// 返回类型修改为更友好的Result类型，除了便于使用外，还可以简化内部的处理逻辑</span>
+<span class="s7">// 比如可以使用? 来处理可能的错误</span>
+<span class="s0">fn </span><span class="s2">parse_money_v3</span><span class="s4">(</span><span class="s2">input</span><span class="s3">: &amp;</span><span class="s2">str</span><span class="s4">) </span><span class="s3">-&gt; </span><span class="s2">Result</span><span class="s3">&lt;</span><span class="s4">(</span><span class="s2">f64</span><span class="s3">, </span><span class="s2">String</span><span class="s4">)</span><span class="s3">, </span><span class="s2">MoneyError</span><span class="s3">&gt;</span><span class="s4">{</span>
+    <span class="s0">let </span><span class="s2">parts</span><span class="s3">: </span><span class="s2">Vec</span><span class="s3">&lt;&amp;</span><span class="s2">str</span><span class="s3">&gt; = </span><span class="s2">input</span><span class="s3">.</span><span class="s2">split_whitespace</span><span class="s4">()</span><span class="s3">.</span><span class="s2">collect</span><span class="s4">()</span><span class="s3">;</span>
+    <span class="s0">let </span><span class="s2">maybe_amount</span><span class="s3">: </span><span class="s2">f64 </span><span class="s3">= </span><span class="s2">parts</span><span class="s4">[</span><span class="s5">0</span><span class="s4">]</span><span class="s3">.</span><span class="s2">parse</span><span class="s4">()</span><span class="s3">?;</span>
+    <span class="s0">let </span><span class="s2">currency </span><span class="s3">= </span><span class="s2">parts</span><span class="s4">[</span><span class="s5">1</span><span class="s4">]</span><span class="s3">.</span><span class="s2">to_string</span><span class="s4">()</span><span class="s3">;</span>
+    <span class="s2">Ok</span><span class="s4">((</span><span class="s2">maybe_amount</span><span class="s3">, </span><span class="s2">currency</span><span class="s4">))</span>
+<span class="s4">}</span>
+
+
+
+<span class="s7">// 如果输入类型为&quot;10&quot; 我们需要返回错误信息</span>
+<span class="s7">// 针对错误类型我们使用Enum管理</span>
+<span class="s3">#</span><span class="s4">[</span><span class="s2">derive</span><span class="s4">(</span><span class="s2">Debug</span><span class="s4">)]</span>
+<span class="s0">pub enum </span><span class="s2">MoneyError</span><span class="s4">{</span>
+    <span class="s2">ParseError</span><span class="s3">,</span>
+    <span class="s2">ParseFormatting</span><span class="s4">(</span><span class="s2">String</span><span class="s4">)</span><span class="s3">,</span>
+    <span class="s2">ParseCurrency</span><span class="s4">(</span><span class="s2">String</span><span class="s4">)</span>
+<span class="s4">}</span>
+
+<span class="s0">impl </span><span class="s2">std</span><span class="s3">::</span><span class="s2">error</span><span class="s3">::</span><span class="s2">Error </span><span class="s0">for </span><span class="s2">MoneyError</span><span class="s4">{</span>
+    <span class="s0">fn </span><span class="s2">description</span><span class="s4">(</span><span class="s3">&amp;</span><span class="s0">self</span><span class="s4">) </span><span class="s3">-&gt; &amp;</span><span class="s2">str</span><span class="s4">{</span>
+        <span class="s0">match </span><span class="s3">*</span><span class="s0">self </span><span class="s4">{</span>
+            <span class="s2">MoneyError</span><span class="s3">::</span><span class="s2">ParseError </span><span class="s3">=&gt; </span><span class="s6">&quot;invalid input&quot;</span><span class="s3">,</span>
+            <span class="s2">_ </span><span class="s3">=&gt; </span><span class="s6">&quot;error&quot;</span><span class="s3">,</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span>
+<span class="s4">}</span>
+
+<span class="s0">impl </span><span class="s2">std</span><span class="s3">::</span><span class="s2">fmt</span><span class="s3">::</span><span class="s2">Display </span><span class="s0">for </span><span class="s2">MoneyError </span><span class="s4">{</span>
+    <span class="s0">fn </span><span class="s2">fmt</span><span class="s4">(</span><span class="s3">&amp;</span><span class="s0">self</span><span class="s3">, </span><span class="s2">f</span><span class="s3">: &amp;</span><span class="s0">mut </span><span class="s2">Formatter</span><span class="s3">&lt;</span><span class="s8">'_</span><span class="s3">&gt;</span><span class="s4">) </span><span class="s3">-&gt; </span><span class="s2">std</span><span class="s3">::</span><span class="s2">fmt</span><span class="s3">::</span><span class="s2">Result </span><span class="s4">{</span>
+       <span class="s0">match </span><span class="s3">*</span><span class="s0">self </span><span class="s4">{</span>
+           <span class="s2">MoneyError</span><span class="s3">::</span><span class="s2">ParseError </span><span class="s3">=&gt; </span><span class="s2">f</span><span class="s3">.</span><span class="s2">write_str</span><span class="s4">(</span><span class="s6">&quot;invalid input&quot;</span><span class="s4">)</span><span class="s3">,</span>
+           <span class="s2">_ </span><span class="s3">=&gt; </span><span class="s2">f</span><span class="s3">.</span><span class="s2">write_str</span><span class="s4">(</span><span class="s6">&quot;error&quot;</span><span class="s4">)</span><span class="s3">,</span>
+       <span class="s4">}</span>
+    <span class="s4">}</span>
+<span class="s4">}</span>
+
+<span class="s0">impl </span><span class="s2">From</span><span class="s3">&lt;</span><span class="s2">ParseError</span><span class="s3">&gt; </span><span class="s0">for </span><span class="s2">MoneyError</span><span class="s4">{</span>
+    <span class="s0">fn </span><span class="s2">from</span><span class="s4">(</span><span class="s2">_</span><span class="s3">: </span><span class="s2">ParseError</span><span class="s4">) </span><span class="s3">-&gt; </span><span class="s0">Self </span><span class="s4">{</span>
+        <span class="s2">MoneyError</span><span class="s3">::</span><span class="s2">ParseError</span>
+    <span class="s4">}</span>
+<span class="s4">}</span>
+
+<span class="s0">fn </span><span class="s2">parse_money_v4</span><span class="s4">(</span><span class="s2">input</span><span class="s3">: &amp;</span><span class="s2">str</span><span class="s4">) </span><span class="s3">-&gt; </span><span class="s2">Result</span><span class="s3">&lt;</span><span class="s4">(</span><span class="s2">f64</span><span class="s3">, </span><span class="s2">String</span><span class="s4">)</span><span class="s3">, </span><span class="s2">MoneyError</span><span class="s3">&gt;</span><span class="s4">{</span>
+    <span class="s0">let </span><span class="s2">parts</span><span class="s3">: </span><span class="s2">Vec</span><span class="s3">&lt;&amp;</span><span class="s2">str</span><span class="s3">&gt; = </span><span class="s2">input</span><span class="s3">.</span><span class="s2">split_whitespace</span><span class="s4">()</span><span class="s3">.</span><span class="s2">collect</span><span class="s4">()</span><span class="s3">;</span>
+    <span class="s0">if </span><span class="s2">parts</span><span class="s3">.</span><span class="s2">len</span><span class="s4">() </span><span class="s3">!= </span><span class="s5">2</span><span class="s4">{</span>
+        <span class="s0">return </span><span class="s2">Err</span><span class="s4">(</span><span class="s2">MoneyError</span><span class="s3">::</span><span class="s2">ParseError</span><span class="s4">)</span><span class="s3">;</span>
+    <span class="s4">}</span>
+    <span class="s0">let </span><span class="s2">maybe_amount </span><span class="s3">= </span><span class="s2">parts</span><span class="s4">[</span><span class="s5">0</span><span class="s4">]</span><span class="s3">.</span><span class="s2">parse</span><span class="s4">()</span><span class="s3">?;</span>
+    <span class="s0">let </span><span class="s2">currency </span><span class="s3">= </span><span class="s2">parts</span><span class="s4">[</span><span class="s5">1</span><span class="s4">]</span><span class="s3">.</span><span class="s2">to_string</span><span class="s4">()</span><span class="s3">;</span>
+    <span class="s2">Ok</span><span class="s4">((</span><span class="s2">maybe_amount</span><span class="s3">, </span><span class="s2">currency</span><span class="s4">))</span>
+<span class="s4">}</span>
+
+
+<span class="s0">fn </span><span class="s2">parse_money_v5</span><span class="s4">(</span><span class="s2">input</span><span class="s3">: &amp;</span><span class="s2">str</span><span class="s4">) </span><span class="s3">-&gt; </span><span class="s2">Result</span><span class="s3">&lt;</span><span class="s4">(</span><span class="s2">f64</span><span class="s3">, </span><span class="s2">String</span><span class="s4">)</span><span class="s3">, </span><span class="s2">MoneyError</span><span class="s3">&gt;</span><span class="s4">{</span>
+    <span class="s0">let </span><span class="s2">parts</span><span class="s3">: </span><span class="s2">Vec</span><span class="s3">&lt;&amp;</span><span class="s2">str</span><span class="s3">&gt; = </span><span class="s2">input</span><span class="s3">.</span><span class="s2">split_whitespace</span><span class="s4">()</span><span class="s3">.</span><span class="s2">collect</span><span class="s4">()</span><span class="s3">;</span>
+
+    <span class="s0">match </span><span class="s2">parts</span><span class="s4">[</span><span class="s3">..</span><span class="s4">] {</span>
+        <span class="s4">[</span><span class="s2">amount</span><span class="s3">, </span><span class="s2">currency</span><span class="s4">] </span><span class="s3">=&gt; </span><span class="s2">Ok</span><span class="s4">((</span><span class="s2">amount</span><span class="s3">.</span><span class="s2">parse</span><span class="s4">()</span><span class="s3">?, </span><span class="s2">currency</span><span class="s3">.</span><span class="s2">to_string</span><span class="s4">()))</span><span class="s3">,</span>
+        <span class="s2">_ </span><span class="s3">=&gt; </span><span class="s2">Err</span><span class="s4">(</span><span class="s2">MoneyError</span><span class="s3">::</span><span class="s2">ParseFormatting</span><span class="s4">(</span><span class="s6">&quot;invalid&quot;</span><span class="s3">.</span><span class="s2">into</span><span class="s4">()))</span>
+    <span class="s4">}</span>
+<span class="s4">}</span>
+
+<span class="s3">#</span><span class="s4">[</span><span class="s2">derive</span><span class="s4">(</span><span class="s2">Debug</span><span class="s4">)]</span>
+<span class="s0">enum </span><span class="s2">Currency</span><span class="s4">{</span>
+    <span class="s2">Dollar</span><span class="s3">,</span>
+    <span class="s2">Euro</span><span class="s3">,</span>
+<span class="s4">}</span>
+
+<span class="s0">impl </span><span class="s2">std</span><span class="s3">::</span><span class="s2">str</span><span class="s3">::</span><span class="s2">FromStr </span><span class="s0">for </span><span class="s2">Currency</span><span class="s4">{</span>
+    <span class="s0">type </span><span class="s2">Err </span><span class="s3">= </span><span class="s2">MoneyError</span><span class="s3">;</span>
+    <span class="s0">fn </span><span class="s2">from_str</span><span class="s4">(</span><span class="s2">s</span><span class="s3">: &amp;</span><span class="s2">str</span><span class="s4">) </span><span class="s3">-&gt; </span><span class="s2">Result</span><span class="s3">&lt;</span><span class="s0">Self</span><span class="s3">, </span><span class="s0">Self</span><span class="s3">::</span><span class="s2">Err</span><span class="s3">&gt; </span><span class="s4">{</span>
+        <span class="s0">match </span><span class="s2">s</span><span class="s3">.</span><span class="s2">to_lowercase</span><span class="s4">()</span><span class="s3">.</span><span class="s2">as_ref</span><span class="s4">() {</span>
+            <span class="s6">&quot;dollar&quot; </span><span class="s3">| </span><span class="s6">&quot;$&quot; </span><span class="s3">=&gt; </span><span class="s2">Ok</span><span class="s4">(</span><span class="s2">Currency</span><span class="s3">::</span><span class="s2">Dollar</span><span class="s4">)</span><span class="s3">,</span>
+            <span class="s6">&quot;euro&quot; </span><span class="s3">| </span><span class="s6">&quot;eur&quot; </span><span class="s3">=&gt; </span><span class="s2">Ok</span><span class="s4">(</span><span class="s2">Currency</span><span class="s3">::</span><span class="s2">Euro</span><span class="s4">)</span><span class="s3">,</span>
+            <span class="s2">_ </span><span class="s3">=&gt; </span><span class="s2">Err</span><span class="s4">(</span><span class="s2">MoneyError</span><span class="s3">::</span><span class="s2">ParseCurrency</span><span class="s4">(</span><span class="s6">&quot;Unknown currency&quot;</span><span class="s3">.</span><span class="s2">into</span><span class="s4">()))</span><span class="s3">,</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span>
+<span class="s4">}</span>
+
+
+<span class="s7">// --------- Last Version</span>
+<span class="s3">#</span><span class="s4">[</span><span class="s2">derive</span><span class="s4">(</span><span class="s2">Debug</span><span class="s4">)]</span>
+<span class="s0">struct </span><span class="s2">Money</span><span class="s4">{</span>
+    <span class="s2">amount</span><span class="s3">: </span><span class="s2">f64</span><span class="s3">,</span>
+    <span class="s2">currency</span><span class="s3">: </span><span class="s2">Currency</span><span class="s3">,</span>
+<span class="s4">}</span>
+
+<span class="s0">impl </span><span class="s2">Money</span><span class="s4">{</span>
+    <span class="s0">fn </span><span class="s2">new</span><span class="s4">(</span><span class="s2">amount</span><span class="s3">: </span><span class="s2">f64</span><span class="s3">, </span><span class="s2">currency</span><span class="s3">: </span><span class="s2">Currency</span><span class="s4">) </span><span class="s3">-&gt; </span><span class="s2">Money</span><span class="s4">{</span>
+        <span class="s2">Money</span><span class="s4">{</span>
+            <span class="s2">amount</span><span class="s3">,</span>
+            <span class="s2">currency</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span>
+<span class="s4">}</span>
+
+<span class="s0">impl </span><span class="s2">From</span><span class="s3">&lt;</span><span class="s2">ParseFloatError</span><span class="s3">&gt; </span><span class="s0">for </span><span class="s2">MoneyError</span><span class="s4">{</span>
+    <span class="s0">fn </span><span class="s2">from</span><span class="s4">(</span><span class="s2">e</span><span class="s3">: </span><span class="s2">ParseFloatError</span><span class="s4">) </span><span class="s3">-&gt; </span><span class="s0">Self</span><span class="s4">{</span>
+        <span class="s2">MoneyError</span><span class="s3">::</span><span class="s2">ParseError</span>
+    <span class="s4">}</span>
+<span class="s4">}</span>
+
+<span class="s0">impl </span><span class="s2">std</span><span class="s3">::</span><span class="s2">str</span><span class="s3">::</span><span class="s2">FromStr </span><span class="s0">for </span><span class="s2">Money</span><span class="s4">{</span>
+    <span class="s0">type </span><span class="s2">Err </span><span class="s3">= </span><span class="s2">MoneyError</span><span class="s3">;</span>
+
+    <span class="s0">fn </span><span class="s2">from_str</span><span class="s4">(</span><span class="s2">s</span><span class="s3">: &amp;</span><span class="s2">str</span><span class="s4">) </span><span class="s3">-&gt; </span><span class="s2">Result</span><span class="s3">&lt;</span><span class="s0">Self</span><span class="s3">, </span><span class="s0">Self</span><span class="s3">::</span><span class="s2">Err</span><span class="s3">&gt; </span><span class="s4">{</span>
+        <span class="s0">let </span><span class="s2">parts</span><span class="s3">: </span><span class="s2">Vec</span><span class="s3">&lt;&amp;</span><span class="s2">str</span><span class="s3">&gt; = </span><span class="s2">s</span><span class="s3">.</span><span class="s2">split_whitespace</span><span class="s4">()</span><span class="s3">.</span><span class="s2">collect</span><span class="s4">()</span><span class="s3">;</span>
+
+        <span class="s0">match </span><span class="s2">parts</span><span class="s4">[</span><span class="s3">..</span><span class="s4">] {</span>
+            <span class="s4">[</span><span class="s2">amount</span><span class="s3">, </span><span class="s2">currency</span><span class="s4">] </span><span class="s3">=&gt; </span><span class="s2">Ok</span><span class="s4">(</span><span class="s2">Money</span><span class="s3">::</span><span class="s2">new</span><span class="s4">(</span><span class="s2">amount</span><span class="s3">.</span><span class="s2">parse</span><span class="s4">()</span><span class="s3">?, </span><span class="s2">currency</span><span class="s3">.</span><span class="s2">parse</span><span class="s4">()</span><span class="s3">?</span><span class="s4">))</span><span class="s3">,</span>
+            <span class="s2">_ </span><span class="s3">=&gt; </span><span class="s2">Err</span><span class="s4">(</span><span class="s2">MoneyError</span><span class="s3">::</span><span class="s2">ParseFormatting</span><span class="s4">(</span><span class="s6">&quot;invalid&quot;</span><span class="s3">.</span><span class="s2">into</span><span class="s4">()))</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span>
+<span class="s4">}</span>
+
+<span class="s0">impl </span><span class="s2">std</span><span class="s3">::</span><span class="s2">fmt</span><span class="s3">::</span><span class="s2">Display </span><span class="s0">for </span><span class="s2">Money</span><span class="s4">{</span>
+    <span class="s0">fn </span><span class="s2">fmt</span><span class="s4">(</span><span class="s3">&amp;</span><span class="s0">self</span><span class="s3">, </span><span class="s2">f</span><span class="s3">: &amp;</span><span class="s0">mut </span><span class="s2">Formatter</span><span class="s3">&lt;</span><span class="s8">'_</span><span class="s3">&gt;</span><span class="s4">) </span><span class="s3">-&gt; </span><span class="s2">std</span><span class="s3">::</span><span class="s2">fmt</span><span class="s3">::</span><span class="s2">Result </span><span class="s4">{</span>
+        <span class="s2">write</span><span class="s3">!</span><span class="s4">(</span><span class="s2">f</span><span class="s3">, </span><span class="s6">&quot;{} {:?}&quot;</span><span class="s3">, </span><span class="s0">self</span><span class="s3">.</span><span class="s2">amount</span><span class="s3">, </span><span class="s0">self</span><span class="s3">.</span><span class="s2">currency</span><span class="s4">)</span>
+    <span class="s4">}</span>
+<span class="s4">}</span>
+
+<span class="s0">fn </span><span class="s2">main</span><span class="s4">() {</span>
+     <span class="s2">println</span><span class="s3">!</span><span class="s4">(</span><span class="s6">&quot;{:?}&quot;</span><span class="s3">, </span><span class="s6">&quot;10.23 dollar&quot;</span><span class="s3">.</span><span class="s2">parse</span><span class="s3">::&lt;</span><span class="s2">Money</span><span class="s3">&gt;</span><span class="s4">())</span><span class="s3">;</span>
+     <span class="s2">println</span><span class="s3">!</span><span class="s4">(</span><span class="s6">&quot;{:?}&quot;</span><span class="s3">, </span><span class="s6">&quot;10 euro&quot;</span><span class="s3">.</span><span class="s2">parse</span><span class="s3">::&lt;</span><span class="s2">Money</span><span class="s3">&gt;</span><span class="s4">())</span><span class="s3">;</span>
+<span class="s4">}</span>
+</pre>
+</body>
+</html>
