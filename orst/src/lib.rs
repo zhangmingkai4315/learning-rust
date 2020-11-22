@@ -46,8 +46,8 @@ mod test{
 
     #[test]
     fn quick_sort_work(){
-        let mut slice = vec![5,4,3,2,1];
+        let mut slice = vec![5,23,3,2,1];
         QuickSort.sort(&mut slice);
-        assert_eq!(slice, [1,2,3,4,5]);
+        assert_eq!(slice, [1,2,3,5,23]);
     }
 }
