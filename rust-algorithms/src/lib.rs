@@ -5,3 +5,4 @@ mod skiplist;
 mod binary_search_tree;
 mod heap;
 mod quick_select;
+mod ring_buffer;
