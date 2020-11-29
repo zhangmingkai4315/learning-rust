@@ -34,13 +34,13 @@ impl<T> RingBuffer<T>{
         }
     }
 
-    fn overwrite(&mut self, element: T) {
-        if self.is_full() {
-            let _ = self.read().expect("Read failed on a full buffer.");
-        }
-        self.write(element)
-            .expect("Write failed on a not full buffer.");
-    }
+    // fn overwrite(&mut self, element: T) {
+    //     if self.is_full() {
+    //         let _ = self.read().expect("Read failed on a full buffer.");
+    //     }
+    //     self.write(element)
+    //         .expect("Write failed on a not full buffer.");
+    // }
 
     fn is_empty(&self) -> bool{
         self.read_offset == self.write_offset
