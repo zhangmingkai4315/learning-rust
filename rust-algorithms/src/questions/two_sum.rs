@@ -99,7 +99,7 @@ mod test{
         assert_eq!(sum_with_target(list.as_mut_slice(), 9), false);
         let mut list = vec![1,4];
         assert_eq!(sum_with_target(list.as_mut_slice(), 9), false);
-    }了
+    }
 
     #[test]
     fn test_two_sum_with_sum(){
@@ -122,10 +122,6 @@ mod test{
         let mut list = vec![1,4];
         assert_eq!(sum_with_hash(list.as_mut_slice(), 9), false);
     }
-
-
-
-    ..todo34571123100000.444447.37703.....0   -【、'【、
 
     #[test]
     fn test_two_sum_with_hash_v2(){
