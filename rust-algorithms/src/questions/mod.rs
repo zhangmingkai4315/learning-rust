@@ -1,2 +1,2 @@
-mod two_sum;
 mod array;
+mod two_sum;

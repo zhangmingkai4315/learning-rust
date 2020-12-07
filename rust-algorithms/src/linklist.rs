@@ -1,44 +1,40 @@
-
-pub mod linklist{
-    use std::rc::Rc;
+pub mod linklist {
     use std::cell::RefCell;
+    use std::rc::Rc;
 
     // 使用RefCell实现内部可变性
     #[derive(Clone)]
-    struct Node<T>{
+    struct Node<T> {
         value: T,
         next: Option<Rc<RefCell<Node<T>>>>,
     }
 
-    impl<T> Node<T>{
+    impl<T> Node<T> {
         fn new(value: T) -> Rc<RefCell<Node<T>>> {
-            Rc::new(RefCell::new(Node {
-                value,
-                next: None,
-            }))
+            Rc::new(RefCell::new(Node { value, next: None }))
         }
     }
 
-    pub struct LinkList<T>{
+    pub struct LinkList<T> {
         head: Option<Rc<RefCell<Node<T>>>>,
         tail: Option<Rc<RefCell<Node<T>>>>,
         length: u64,
     }
 
     impl<T> LinkList<T> {
-        pub fn new_empty()->LinkList<T>{
-            LinkList{
+        pub fn new_empty() -> LinkList<T> {
+            LinkList {
                 head: None,
                 tail: None,
                 length: 0,
             }
         }
 
-        pub fn len(&self) -> u64{
+        pub fn len(&self) -> u64 {
             self.length
         }
 
-        pub fn append(&mut self, value: T){
+        pub fn append(&mut self, value: T) {
             let new = Node::new(value);
             match self.tail.take() {
                 Some(old) => old.borrow_mut().next = Some(new.clone()),
@@ -48,26 +44,29 @@ pub mod linklist{
             self.tail = Some(new)
         }
 
-        pub fn pop(&mut self) -> Option<T>{
-            self.head.take().map(|head|{
-                if let Some(next) = head.borrow_mut().next.take(){
+        pub fn pop(&mut self) -> Option<T> {
+            self.head.take().map(|head| {
+                if let Some(next) = head.borrow_mut().next.take() {
                     self.head = Some(next);
-                }else{
+                } else {
                     self.tail.take();
                 }
-                self.length -=1;
-                Rc::try_unwrap(head).ok().expect("something wrong").into_inner().value
+                self.length -= 1;
+                Rc::try_unwrap(head)
+                    .ok()
+                    .expect("something wrong")
+                    .into_inner()
+                    .value
             })
         }
-
     }
 }
 
 #[cfg(test)]
-mod tests{
+mod tests {
     use super::*;
     #[test]
-    fn test_linklist_string(){
+    fn test_linklist_string() {
         let mut ll = linklist::LinkList::new_empty();
         ll.append("hello1".to_string());
         ll.append("hello2".to_string());
@@ -84,7 +83,7 @@ mod tests{
     }
 
     #[test]
-    fn test_linklist_i32(){
+    fn test_linklist_i32() {
         let mut ll = linklist::LinkList::new_empty();
         ll.append(1);
         ll.append(2);
