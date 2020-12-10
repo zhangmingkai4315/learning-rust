@@ -1,20 +1,19 @@
-pub mod binary_search_tree{
-    use std::rc::Rc;
+pub mod binary_search_tree {
     use std::cell::RefCell;
-
+    use std::rc::Rc;
 
     pub type NodeOption = Option<Rc<RefCell<Node>>>;
 
     #[derive(PartialEq, Debug)]
-    pub struct Node{
+    pub struct Node {
         pub val: u64,
         left: NodeOption,
         right: NodeOption,
     }
 
-    impl Node{
-        pub fn new(val: u64)->Node{
-            Node{
+    impl Node {
+        pub fn new(val: u64) -> Node {
+            Node {
                 val,
                 left: None,
                 right: None,
@@ -22,16 +21,16 @@ pub mod binary_search_tree{
         }
     }
 
-    pub struct BinarySearchTree{
+    pub struct BinarySearchTree {
         pub root: NodeOption,
-        pub count: u64
+        pub count: u64,
     }
 
     impl BinarySearchTree {
         pub fn new() -> BinarySearchTree {
             BinarySearchTree {
                 root: None,
-                count: 0
+                count: 0,
             }
         }
 
@@ -84,7 +83,6 @@ pub mod binary_search_tree{
 
             self.count += 1;
         }
-
 
         // pub fn delete(&mut self, val:u64)->bool{
         //     if self.is_empty(){
@@ -159,14 +157,14 @@ pub mod binary_search_tree{
 
         pub fn find(&self, val: u64) -> bool {
             if self.is_empty() {
-                return false
+                return false;
             }
 
             let mut curr = Rc::clone(self.root.as_ref().unwrap());
             loop {
                 let next_curr;
                 if val == curr.borrow().val {
-                    return true
+                    return true;
                 } else if val < curr.borrow().val {
                     match &curr.borrow().left {
                         Some(left_node) => next_curr = Rc::clone(left_node),
@@ -199,33 +197,30 @@ pub mod binary_search_tree{
             if subtree.is_none() {
                 return None;
             }
-            let mut current  = subtree.as_ref().unwrap().clone();
-            loop{
+            let mut current = subtree.as_ref().unwrap().clone();
+            loop {
                 if current.borrow().left.is_none() {
-                    break
+                    break;
                 }
                 current = current.clone().borrow().left.as_ref().unwrap().clone();
             }
-            return Some(current)
+            return Some(current);
         }
     }
-
-
 }
 
 #[cfg(test)]
-mod tests{
+mod tests {
     use crate::binary_search_tree::binary_search_tree::{BinarySearchTree, Node};
 
     #[test]
-    fn test_new_node(){
+    fn test_new_node() {
         let node = Node::new(5);
         assert_eq!(node.val, 5);
     }
 
-
     #[test]
-    fn test_bst(){
+    fn test_bst() {
         let mut bs_tree = BinarySearchTree::new();
         assert_eq!(bs_tree.count, 0);
         assert_eq!(bs_tree.is_empty(), true);
@@ -254,7 +249,7 @@ mod tests{
     }
 
     #[test]
-    fn test_min(){
+    fn test_min() {
         let mut bs_tree = BinarySearchTree::new();
         assert_eq!(bs_tree.count, 0);
         assert_eq!(bs_tree.is_empty(), true);
@@ -273,5 +268,4 @@ mod tests{
         assert_eq!(item.is_some(), true);
         assert_eq!(item.unwrap().borrow().val, 0)
     }
-
 }
