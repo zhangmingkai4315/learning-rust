@@ -8,4 +8,5 @@ mod quick_select;
 mod ring_buffer;
 mod questions;
 mod lru;
+mod dynamic_program;
 
