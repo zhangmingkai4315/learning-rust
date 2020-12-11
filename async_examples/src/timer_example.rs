@@ -20,7 +20,6 @@ impl Future for TimeFuture{
     type Output = ();
 
     fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
-
         let mut shared_state = self.shared_state.lock().unwrap();
         println!("polling: {}", shared_state.id);
         if shared_state.completed{
@@ -47,8 +46,10 @@ impl TimeFuture{
             thread::sleep(duration);
             let mut shared_state = thread_shared_state.lock().unwrap();
             shared_state.completed = true ;
+            // 如果当前的waker存在对象，则执行该对象的wake
             if let Some(waker) = shared_state.waker.take(){
                 println!("try wake up : {}", id);
+                // 通知excutor可以执行poll
                 waker.wake();
             }
         });
