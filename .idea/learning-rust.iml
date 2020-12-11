@@ -7,6 +7,9 @@
       <sourceFolder url="file://$MODULE_DIR$/macros/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/memory/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/tokio/my-redis/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/rust-algorithms/benches" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/async_examples/src" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/async_examples/target" />
       <excludeFolder url="file://$MODULE_DIR$/macros/target" />
       <excludeFolder url="file://$MODULE_DIR$/memory/target" />
       <excludeFolder url="file://$MODULE_DIR$/rust-algorithms/target" />
