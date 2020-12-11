@@ -7,4 +7,5 @@ mod lru;
 mod questions;
 mod quick_select;
 mod ring_buffer;
+mod dynamic_program;
 mod skiplist;

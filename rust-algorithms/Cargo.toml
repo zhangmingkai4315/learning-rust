@@ -8,3 +8,8 @@ edition = "2018"
 
 [dependencies]
 rand="0.6.5"
+criterion = "0.3.3"
+
+[[bench]]
+name = "my_benchmark"
+harness = false
