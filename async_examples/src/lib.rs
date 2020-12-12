@@ -69,4 +69,6 @@ fn test_async_await(){
 mod future_example;
 mod timer_example;
 mod excutor_example;
+mod async_await;
+mod pinning_example;
 
